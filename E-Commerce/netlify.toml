@@ -1,5 +1,16 @@
 [build]
-  base    = "e-commerce-site"
-  command = "npm run build"
+  base = "E-Commerce"
   publish = "E-Commerce/dist"
-  
+  command = "npm run build"
+
+[dev]
+  command = "npm run dev"
+  port = 8888
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

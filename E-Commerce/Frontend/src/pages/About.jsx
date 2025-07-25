@@ -43,7 +43,7 @@ const AboutUsSection = (props) => {
               <div className="lg:w-1/2 text-center lg:text-left">
                 <p className="text-lg text-gray-700 leading-relaxed mb-6">
                   Welcome to{" "}
-                  <span className="font-bold text-pink-600">Anon</span>, your
+                  <span className="font-bold text-pink-600">ShopEase</span>, your
                   premier destination for high-quality products and an
                   unparalleled shopping experience. We are passionate about
                   bringing you the latest trends and essential items across
