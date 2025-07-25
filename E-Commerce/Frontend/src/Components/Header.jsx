@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import logo from './logo.png';
@@ -11,7 +11,9 @@ const Header = ({
   notificationCount = 0,
 }) => {
   const [user, setUser] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const profileRef = useRef(null);
 
   // ✅ Check login status on load + listen to login/logout changes
   useEffect(() => {
@@ -36,9 +38,21 @@ const Header = ({
     return () => window.removeEventListener('storage', checkUser);
   }, []);
 
+  // ✅ Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
+    setShowDropdown(false);
     window.dispatchEvent(new Event('storage')); // force update
     navigate('/login');
   };
@@ -64,6 +78,7 @@ const Header = ({
 
         {/* Search + Auth + Cart */}
         <div className="flex items-center gap-4">
+          {/* Search */}
           <div className="relative">
             <input
               type="text"
@@ -81,14 +96,30 @@ const Header = ({
               Login/Signup
             </Link>
           ) : (
-            <div className="relative group">
-              <button className="w-10 h-10 rounded-full bg-white text-purple-600 font-bold flex items-center justify-center shadow-md">
+            <div ref={profileRef} className="relative">
+              <button
+                onClick={() => setShowDropdown((prev) => !prev)}
+                className="w-10 h-10 rounded-full bg-white text-purple-600 font-bold flex items-center justify-center shadow-md"
+              >
                 {user.name.charAt(0).toUpperCase()}
               </button>
-              <div className="absolute hidden group-hover:block bg-white text-black rounded shadow-md right-0 mt-2 w-40 z-50">
-                <Link to="/my-orders" className="block px-4 py-2 hover:bg-gray-100">My Orders</Link>
-                <button onClick={handleLogout} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
-              </div>
+              {showDropdown && (
+                <div className="absolute bg-white text-black rounded shadow-md right-0 mt-2 w-40 z-50">
+                  <Link
+                    to="/my-orders"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    My Orders
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
@@ -99,7 +130,6 @@ const Header = ({
             aria-label="Shopping Cart"
           >
             <i className="fa-solid fa-cart-shopping"></i>
-
             {notificationCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-bounce">
                 {notificationCount}

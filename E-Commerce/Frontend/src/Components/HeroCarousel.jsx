@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import heroLogo from './hero_logo.png';
-
+import AuthPage from '../pages/Login.jsx'; // Adjust the import path as needed
 
 const HeroCarousel = () => {
     const heroImages = [
@@ -9,45 +10,40 @@ const HeroCarousel = () => {
             heading: "Discover the Best Deals on ",
             highlight: "Trendy Products",
             description: "Shop the latest in fashion, electronics, home essentials, and more. Enjoy fast delivery, secure checkout, and exclusive offers every day!",
-            cta: "Shop Now"
+            cta: "Shop Now",
+            link: "/product"
         },
         {
             image: heroLogo,
             heading: "Upgrade Your Lifestyle with ",
             highlight: "Exclusive Collections",
             description: "Find unique products and limited-time offers. Make your shopping experience memorable with ShopEase!",
-            cta: "Browse Collections"
+            cta: "Browse Collections",
+            link: "/product"
         },
         {
             image: heroLogo,
             heading: "Fast, Reliable, and ",
             highlight: "Customer-Focused",
             description: "Enjoy 24/7 support, easy returns, and a community of happy shoppers. Your satisfaction is our priority!",
-            cta: "Join Now"
+            cta: "Join Now",
+            link: "/login",
+            component: AuthPage // This will render the AuthPage component when the link is clicked
         }
     ];
 
     const [currentSlide, setCurrentSlide] = useState(0);
 
-    // Auto-slide functionality
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % heroImages.length);
-        }, 3000); // Auto-slide every 3 seconds
+            setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+        }, 3000);
         return () => clearInterval(interval);
     }, [heroImages.length]);
 
-    const goToSlide = (index) => {
-        setCurrentSlide(index);
-    };
-
-    const nextSlide = () => {
-        setCurrentSlide((prevSlide) => (prevSlide + 1) % heroImages.length);
-    };
-
-    const prevSlide = () => {
-        setCurrentSlide((prevSlide) => (prevSlide - 1 + heroImages.length) % heroImages.length);
-    };
+    const goToSlide = (index) => setCurrentSlide(index);
+    const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
 
     return (
         <section className="relative bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100 py-10 md:py-16 flex items-center justify-center overflow-hidden min-h-[280px] md:min-h-[320px]">
@@ -66,29 +62,31 @@ const HeroCarousel = () => {
                             <p className="text-lg md:text-xl text-gray-700 mb-8">
                                 {slide.description}
                             </p>
-                            <a href='#' className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transition-colors duration-300">
+                            <Link
+                                to={slide.link}
+                                className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transition-colors duration-300"
+                            >
                                 {slide.cta}
-                            </a>
+                            </Link>
                         </div>
+
                         {/* Hero Image */}
                         <div className="flex-shrink-0 w-full md:w-1/2 flex justify-center">
-                            <img
-                                src={slide.image}
-                                alt="Shopping Hero"
-                            
-                            />
+                            <img src={slide.image} alt="Shopping Hero" />
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Carousel Controls & Indicators */}
-            <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-pink-200 text-purple-700 rounded-full p-3 shadow-lg z-20 transition-all duration-200">
-                <i className="fas fa-chevron-left"></i> {/* Assuming Font Awesome is linked */}
+            {/* Controls */}
+            <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-pink-200 text-purple-700 rounded-full p-3 shadow-lg z-20">
+                <i className="fas fa-chevron-left"></i>
             </button>
-            <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-pink-200 text-purple-700 rounded-full p-3 shadow-lg z-20 transition-all duration-200">
-                <i className="fas fa-chevron-right"></i> {/* Assuming Font Awesome is linked */}
+            <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-pink-200 text-purple-700 rounded-full p-3 shadow-lg z-20">
+                <i className="fas fa-chevron-right"></i>
             </button>
+
+            {/* Indicators */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
                 {heroImages.map((_, idx) => (
                     <button
@@ -99,6 +97,7 @@ const HeroCarousel = () => {
                     />
                 ))}
             </div>
+
             {/* Decorative Circles */}
             <div className="absolute top-0 left-0 w-40 h-40 bg-pink-200 rounded-full opacity-30 blur-2xl -z-10"></div>
             <div className="absolute bottom-0 right-0 w-60 h-60 bg-purple-200 rounded-full opacity-30 blur-2xl -z-10"></div>
