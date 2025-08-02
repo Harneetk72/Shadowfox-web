@@ -196,8 +196,7 @@ const App = () => {
 
         <Route path="/Contact" element={<ContactUsPage />} />
         <Route path="/Product" element={<ProductSection onAddToCart={addToCart} />} />
-        <Route path="/Login" element={
-          <AuthPage
+        <Route path="/Login" element={<AuthPage
             setIsLoggedIn={setIsLoggedIn}  // ✅ Login update
             setUser={setUser}              // ✅ Set user info
           />} 
