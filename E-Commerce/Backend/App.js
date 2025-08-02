@@ -1,38 +1,36 @@
 const express = require('express');
-const user = require('./Models/user')
-const connection = require('./config/DB_practice')
-const bcrypt = require('bcryptjs'); // Add at the top
+const user = require('./Models/user');
+const connection = require('./config/DB_practice');
+const bcrypt = require('bcryptjs');
 const app = express();
 const cors = require('cors');
 const session = require('express-session');
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+
 app.use(cors({
-    origin: 'http://localhost:5173',  // 👈 your frontend origin
-    credentials: true                 // 👈 allow cookies/session
+    origin: 'http://localhost:5173',
+    credentials: true
 }));
+
 app.use(session({
     secret: 'secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // true if using HTTPS
+    cookie: { secure: false }
 }));
 
 app.get('/', (req, res) => {
-  res.send('Hello World!'); 
+    res.send('Hello World!');
 });
 
-app.get('/login',(req,res)=>{
+app.get('/login', (req, res) => {
     res.render('login');
-})
+});
 
-
-
-// Signup Route (matches frontend signup API)
 app.post('/signup', async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -52,10 +50,6 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-
-
-
-// Login Route
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -70,7 +64,6 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        // Save user session
         req.session.user = {
             id: existingUser._id,
             email: existingUser.email,
@@ -85,4 +78,5 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.listen(5000);
+// ❗️Remove app.listen for Vercel
+module.exports = app;
